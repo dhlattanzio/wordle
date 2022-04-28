@@ -10,7 +10,7 @@ export default function Dialog(props) {
             <div className={main}>
                 <div className="relative flex justify-end items-center py-4 mb-5 border-b">
                     <div className="absolute w-full text-center">
-                        <h2 className="text-xl font-bold">HOW TO PLAY</h2>
+                        <h2 className="text-xl font-bold">{props.title}</h2>
                     </div>
                     <button className="mr-3 hover:text-red-700 z-10" onClick={props.onClose}>
                         <XIcon className="h-6 hover:text-zinc-500" />
