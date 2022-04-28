@@ -12,7 +12,7 @@ function App() {
     return (
         <div className="flex flex-col max-w-lg mx-auto h-screen text-black dark:text-gray-200">
             <Navbar onButtonRulesClick={() => setTutorial(true)} />
-            <div className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between overflow-clip">
                 <div className="flex-1 flex flex-col justify-center">
                     <Board />
                 </div>
@@ -25,7 +25,7 @@ function App() {
                     <p className="my-3">Each guess must be a valid five-letter word. Hit the enter button to submit.</p>
                     <p>After each guess, the color of the tiles will change to show how close your guess was to the word.</p>
 
-                    <hr className="my-2" />
+                    <hr className="my-4" />
 
                     <h3 className="font-semibold mb-4">Examples</h3>
 
@@ -47,7 +47,7 @@ function App() {
 
                     <p className="my-3">The letter U is not in the word in any spot.</p>
 
-                    <hr className="my-2" />
+                    <hr className="my-4" />
                     <p className="my-3 font-semibold">A new WORDLE will be available each day!</p>
             </Dialog>
         </div>
