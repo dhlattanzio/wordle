@@ -1,8 +1,12 @@
 import { SunIcon, MoonIcon, BookOpenIcon } from '@heroicons/react/solid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Navbar(props) {
-    const [darkMode, setDarkMode] = useState(Boolean(localStorage.getItem("darkMode")) || false);
+    const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
+
+    useEffect(() => {
+        if (localStorage.getItem("darkMode") === "true") document.querySelector("html").classList.add("dark");
+    }, []);
 
     const toggleTheme = () => {
         localStorage.setItem("darkMode", !darkMode);

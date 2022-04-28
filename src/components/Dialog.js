@@ -1,4 +1,3 @@
-import Cell from "./Cell";
 import { XIcon } from "@heroicons/react/solid"
 
 export default function Dialog(props) {
@@ -8,7 +7,7 @@ export default function Dialog(props) {
     return (
         <div className={classes}>
             <div className={main}>
-                <div className="relative flex justify-end items-center py-4 mb-5 border-b">
+                <div className="relative flex justify-end items-center py-4 mb-5 border-b border-zinc-500">
                     <div className="absolute w-full text-center">
                         <h2 className="text-xl font-bold">{props.title}</h2>
                     </div>

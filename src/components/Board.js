@@ -1,17 +1,26 @@
 import Cell from "./Cell";
-import words from "../utils/words";
 
-console.log(words[0]);
+export default function Board(props) {
+    const previous = props.previous;
+    const current = props.current;
 
-export default function Board() {
     return (
-        <div className="grid grid-cols-5 grid-rows-6 gap-2 mx-20">
-            <Cell value="D"/><Cell value="I"/><Cell value="E"/><Cell value="G"/><Cell value="O"/>
-            <Cell/><Cell/><Cell/><Cell/><Cell/>
-            <Cell/><Cell/><Cell/><Cell/><Cell/>
-            <Cell/><Cell/><Cell/><Cell/><Cell/>
-            <Cell/><Cell/><Cell/><Cell/><Cell/>
-            <Cell/><Cell/><Cell/><Cell/><Cell/>
+        <div className="flex-1 flex flex-col mx-auto justify-center">
+            {
+                [...Array(6)].map((x, index1) => (
+                    <div key={index1} className="flex flex-1 max-h-16 my-0.5">{
+                        [...Array(5)].map((x, index2) => {
+                            if (index1 < previous.length) {
+                                const cell = previous[index1][index2];
+                                return <Cell key={index2} value={cell[0]} result={cell[1]} />
+                            } else if (index1 === previous.length) {
+                                return <Cell key={index2} value={current[index2]} />
+                            }
+                            return <Cell key={index2} />
+                        })
+                    }</div>
+                ))
+            }
         </div>
     );
 }
