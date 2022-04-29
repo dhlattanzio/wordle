@@ -1,38 +1,20 @@
+import { useState, useEffect } from "react";
+
 import Navbar from "./components/Navbar";
 import Board from './components/Board';
 import Keyboard from "./components/Keyboard";
-
-import { useState, useEffect } from "react";
-import TutorialDialog from "./components/TutorialDialog";
-import StatsDialog from "./components/StatsDialog";
+import DialogTutorial from "./components/DialogTutorial";
+import DialogStats from "./components/DialogStats";
 import Notification from "./components/Notification";
 
-import { words } from './utils/words'
+import { words } from './data/words'
+import { random, getDayOfYear, getCellResults } from "./utils/utils";
+import { Config } from "./config";
 
-const validLetters = "QWERTYUIOPASDFGHJKLÑZXCVBNM".split("");
-
-const tmpArray = [...words];
-const test = tmpArray[parseInt(Math.random() * tmpArray.length)].toUpperCase();
-console.log("Respuesta: ", test)
-
-const getCellResults = (correctWord, currentWord) => {
-    const result = [];
-    const correctLetters = {};
-    correctWord.split("").map(x => correctLetters[x] = (correctLetters[x] ?? 0) + 1);
-
-    currentWord.split("").map((x, index) => {
-        if (x === correctWord[index]) {
-            result.push(1);
-        } else if (x in correctLetters) {
-            result.push(0);
-        } else {
-            result.push(-1);
-        }
-        return x;
-    })
-
-    return result;
-}
+const allWords = [...words];
+const todayWordIndex = random(getDayOfYear() + 1, 0, allWords.length);
+const todayWord = allWords[todayWordIndex].toUpperCase();
+console.log("Respuesta: ", todayWord)
 
 const startState = (localStorage.getItem("boardState") && JSON.parse(localStorage.getItem("boardState")));
 const startStatistics = (localStorage.getItem("stats") ? JSON.parse(localStorage.getItem("stats")) : {
@@ -54,7 +36,7 @@ function App() {
         "end": false,
         "notifications": [],
         "nid": 0,
-        "correct": test
+        "correct": todayWord
     });
 
     const [stats, setStats] = useState(startStatistics);
@@ -132,7 +114,7 @@ function App() {
                     }
                     break;
                 default:
-                    if (newCurrent.length < 5 && validLetters.includes(key)) newCurrent.push(key);
+                    if (newCurrent.length < 5 && Config.validLetters.includes(key)) newCurrent.push(key);
                     break;
             }
     
@@ -169,8 +151,8 @@ function App() {
                     <Keyboard onKeyPressed={addPressedKey} />
                 </div>
             </div>
-            <TutorialDialog hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
-            <StatsDialog stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
+            <DialogTutorial hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
+            <DialogStats stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
             <Notification list={game["notifications"]}/>
         </div>
     );

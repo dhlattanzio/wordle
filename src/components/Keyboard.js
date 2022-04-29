@@ -19,7 +19,7 @@ export default function Keyboard(props) {
     }
 
     return (
-        <div className="flex flex-col mt-2 mb-8vh mx-2">
+        <div className="flex flex-col mt-2 mb-[8vh] mx-2">
             {
                 keys.map((line, index) => <div key={index} className="flex mb-2">{line.map((key, index) => createKey(key, index, props.onKeyPressed))}</div>)
             }

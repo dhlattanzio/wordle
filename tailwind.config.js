@@ -6,9 +6,6 @@ module.exports = {
     ],
     theme: {
         extend: {
-            spacing: {
-                '8vh': '8vh'
-            },
             keyframes: {
                 pulse: {
                     '0%': { transform: 'scale(1)'},
@@ -34,8 +31,8 @@ module.exports = {
             },
             animation: {
                 pulse: "pulse 0.09s ease-out 1",
-                flipStart: "flipStart 0.4s ease-out 1",
-                flipEnd: "flipEnd 0.4s ease-out 1",
+                flipStart: "flipStart 0.3s ease-out 1",
+                flipEnd: "flipEnd 0.3s ease-out 1",
                 notificationIn: "notificationIn 0.2s ease-out 1",
                 notificationOut: "notificationOut 0.6s ease-out 1",
             }

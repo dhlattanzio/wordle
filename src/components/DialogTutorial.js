@@ -1,26 +1,9 @@
 import Dialog from "./Dialog";
 import Cell from "./Cell";
 
-export default function TutorialDialog(props) {
-    const getCellResults = (correctWord, currentWord) => {
-        const result = [];
-        const correctLetters = {};
-        correctWord.split("").map(x => correctLetters[x] = (correctLetters[x] ?? 0) + 1);
+import { getCellResults } from "../utils/utils";
 
-        currentWord.split("").map((x, index) => {
-            if (x === correctWord[index]) {
-                result.push(1);
-            } else if (x in correctLetters) {
-                result.push(0);
-            } else {
-                result.push(-1);
-            }
-            return x;
-        })
-
-        return result;
-    }
-
+export default function DialogTutorial(props) {
     const tutorialWord1 = getCellResults("W____", "WEARY").map(x => x === 1 ? x : -2);
     const tutorialWord2 = getCellResults("____I", "PILLS").map(x => x === 0 ? x : -2);
     const tutorialWord3 = getCellResults("_____", "VAGUE").map((x, index) => index === 3 ? x : -2);

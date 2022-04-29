@@ -1,7 +1,7 @@
 import Dialog from "./Dialog";
 import { ShareIcon } from "@heroicons/react/solid";
 
-export default function StatsDialog(props) {
+export default function DialogStats(props) {
     const stats = props.stats;
     const wins = stats["wins"];
     const winsPerc = stats["played"] === 0 ? 0 : parseInt(wins / stats["played"] * 100);
