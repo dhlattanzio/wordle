@@ -5,7 +5,6 @@ const Item = (props) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            console.log("timeoooooout!");
             setFinish(true);
         }, 2000);
         return () => clearTimeout(timer);
@@ -22,7 +21,6 @@ const Item = (props) => {
 }
 
 export default function Notification(props) {
-    console.log("aaaaaa", props.list);
     return (
         <div className="flex flex-col items-center text-zinc-700 w-full top-0 absolute mt-14 left-0 h-5/6 overflow-hidden pointer-events-none">
             {props.list.reverse().map(elem => (

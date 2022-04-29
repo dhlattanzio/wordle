@@ -2,23 +2,28 @@ import Dialog from "./Dialog";
 import { ShareIcon } from "@heroicons/react/solid";
 
 export default function StatsDialog(props) {
+    const stats = props.stats;
+    const wins = stats["wins"];
+    const winsPerc = stats["played"] === 0 ? 0 : parseInt(wins / stats["played"] * 100);
+    const distribution = stats["dist"];
+
     return (
         <Dialog onClose={props.onClose} hidden={props.hidden} title="STATISTICS">
             <div className="flex justify-center mb-4">
                 <div className="text-center w-16 p-2">
-                    <p className="font-semibold text-3xl mb-2">1</p>
+                    <p className="font-semibold text-3xl mb-2">{stats["played"]}</p>
                     <p className="font-extralight text-xs">Played</p>
                 </div>
                 <div className="text-center w-16 p-2">
-                    <p className="font-semibold text-3xl mb-2">100</p>
+                    <p className="font-semibold text-3xl mb-2">{winsPerc}</p>
                     <p className="font-extralight text-xs">Win %</p>
                 </div>
                 <div className="text-center w-16 p-2">
-                    <p className="font-semibold text-3xl mb-2">1</p>
+                    <p className="font-semibold text-3xl mb-2">{stats["streak"]}</p>
                     <p className="font-extralight text-xs">Current Streak</p>
                 </div>
                 <div className="text-center w-16 p-2">
-                    <p className="font-semibold text-3xl mb-2">1</p>
+                    <p className="font-semibold text-3xl mb-2">{stats["maxStreak"]}</p>
                     <p className="font-extralight text-xs">Max Streak</p>
                 </div>
             </div>
@@ -26,16 +31,17 @@ export default function StatsDialog(props) {
             <h2 className="text-center font-semibold text-lg mt-6 mb-4">GUESS DISTRIBUTION</h2>
 
             <div className="text-sm mb-8 mx-14">
-                <div className="flex mb-2">
-                    <span className="pr-2">1</span>
-                    <span className="w-full px-2 bg-green-700 text-white text-right">1</span>
-                </div>
-                {[...Array(5)].map((x, index) => (
-                    <div key={index} className="flex mb-2">
-                        <span className="pr-2">{index + 2}</span>
-                        <span className="px-2 bg-gray-700 text-white text-right">0</span>
-                    </div>
-                ))}
+                {distribution.map((x, index) => {
+                    const percentage = x === 0 ? 0 : parseInt(x / wins * 100);
+                    const styles = x > 0 ? {"width": percentage + "%"} : {};
+
+                    return (
+                        <div key={index} className="flex mb-2">
+                            <span className="pr-2">{index + 1}</span>
+                            <span style={styles} className={`px-2 ${x === 0 ? "bg-gray-700" : "bg-green-700"} text-white text-right`}>{x}</span>
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="flex items-center mb-4">

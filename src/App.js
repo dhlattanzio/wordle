@@ -35,7 +35,13 @@ const getCellResults = (correctWord, currentWord) => {
 }
 
 const startState = (localStorage.getItem("boardState") && JSON.parse(localStorage.getItem("boardState")));
-const startStats = (JSON.parse(localStorage.getItem("stats")))
+const startStatistics = (localStorage.getItem("stats") ? JSON.parse(localStorage.getItem("stats")) : {
+    played: 0,
+    wins: 0,
+    streak: 0,
+    maxStreak: 0,
+    dist: [...Array(6).fill(0)]
+});
 
 function App() {
     const [tutorialDialog, setTutorialDialog] = useState(false);
@@ -50,12 +56,26 @@ function App() {
         "correct": test
     });
 
+    const [stats, setStats] = useState(startStatistics);
+
     const isWordValid = (word) => {
         return words.has(word.toLowerCase());
     }
 
-    const updateStats = (result, tries) => {
-        // TODO!
+    const updateStats = (win, tries) => {
+        const currenStreak = win ? startStatistics["streak"] + 1 : 0;
+        const curretDist = [...startStatistics["dist"]];
+        if (win) curretDist[tries - 1] += 1;
+
+        const newStats = {
+            played: startStatistics["played"] + 1,
+            wins: startStatistics["wins"] + (win ? 1 : 0),
+            streak: currenStreak,
+            maxStreak: Math.max(currenStreak, startStatistics["maxStreak"]),
+            dist: curretDist
+        }
+        localStorage.setItem("stats", JSON.stringify(newStats));
+        setStats(newStats);
     }
 
     const addPressedKey = (key) => {
@@ -89,8 +109,10 @@ function App() {
                                 nid++;
                                 if (correctWord === word) {
                                     notification.unshift(["Correcto!", nid]);
+                                    updateStats(true, newPrevious.length);
                                 } else {
                                     notification.unshift([`Respuesta: ${correctWord}`, nid]);
+                                    updateStats(false, newPrevious.length);
                                 }
                             }
                         } else {
@@ -140,7 +162,7 @@ function App() {
                 </div>
             </div>
             <TutorialDialog hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
-            <StatsDialog hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
+            <StatsDialog stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
             <Notification list={game["notifications"]}/>
         </div>
     );
