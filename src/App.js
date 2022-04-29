@@ -46,6 +46,7 @@ const startStatistics = (localStorage.getItem("stats") ? JSON.parse(localStorage
 function App() {
     const [tutorialDialog, setTutorialDialog] = useState(false);
     const [statsDialog, setStatsDialog] = useState(false);
+    const [openDialogAtEnd, setOpenDialogAtEnd] = useState(true);
 
     const [game, setGame] = useState(startState || {
         "previous": [],
@@ -57,6 +58,13 @@ function App() {
     });
 
     const [stats, setStats] = useState(startStatistics);
+
+    if (game["end"] && openDialogAtEnd) {
+        setOpenDialogAtEnd(false);
+        setTimeout(() => {
+            setStatsDialog(true);
+        }, 1500);
+    }
 
     const isWordValid = (word) => {
         return words.has(word.toLowerCase());
