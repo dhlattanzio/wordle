@@ -35,20 +35,20 @@ export default function TutorialDialog(props) {
 
             <h3 className="font-semibold mb-4">Examples</h3>
 
-            <div className="flex mt-8 h-16">
-                {"WEARY".split("").map((x, index) => <Cell key={index} result={tutorialWord1[index]} value={x} />)}
+            <div className="flex mt-8 h-12">
+                {"WEARY".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord1[index]} value={x} />)}
             </div>
 
             <p className="my-3">The letter <span className="font-bold">W</span> is in the word and in the correct spot.</p>
 
-            <div className="flex mt-8 h-16">
-                {"PILLS".split("").map((x, index) => <Cell key={index} result={tutorialWord2[index]} value={x} />)}
+            <div className="flex mt-8 h-12">
+                {"PILLS".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord2[index]} value={x} />)}
             </div>
 
             <p className="my-3">The letter <span className="font-bold">I</span> is in the word but in the wrong spot.</p>
 
-            <div className="flex mt-8 h-16">
-                {"VAGUE".split("").map((x, index) => <Cell key={index} result={tutorialWord3[index]} value={x} />)}
+            <div className="flex mt-8 h-12">
+                {"VAGUE".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord3[index]} value={x} />)}
             </div>
 
             <p className="my-3">The letter <span className="font-bold">U</span> is not in the word in any spot.</p>

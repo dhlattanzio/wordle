@@ -4,16 +4,18 @@ import Keyboard from "./components/Keyboard";
 
 import { useState, useEffect } from "react";
 import TutorialDialog from "./components/TutorialDialog";
+import StatsDialog from "./components/StatsDialog";
+import Notification from "./components/Notification";
 
 import { words } from './utils/words'
 
 const validLetters = "QWERTYUIOPASDFGHJKLÑZXCVBNM".split("");
 
-const test = words[parseInt(Math.random() * words.length)].toUpperCase();
+const tmpArray = [...words];
+const test = tmpArray[parseInt(Math.random() * tmpArray.length)].toUpperCase();
 console.log("Respuesta: ", test)
 
 const getCellResults = (correctWord, currentWord) => {
-    console.log("dsadsa", correctWord, currentWord)
     const result = [];
     const correctLetters = {};
     correctWord.split("").map(x => correctLetters[x] = (correctLetters[x] ?? 0) + 1);
@@ -32,16 +34,28 @@ const getCellResults = (correctWord, currentWord) => {
     return result;
 }
 
+const startState = (localStorage.getItem("boardState") && JSON.parse(localStorage.getItem("boardState")));
+const startStats = (JSON.parse(localStorage.getItem("stats")))
+
 function App() {
-    const [tutorial, setTutorial] = useState(false);
-    const [game, setGame] = useState({
+    const [tutorialDialog, setTutorialDialog] = useState(false);
+    const [statsDialog, setStatsDialog] = useState(false);
+
+    const [game, setGame] = useState(startState || {
         "previous": [],
         "current": [],
-        "end": false
+        "end": false,
+        "notifications": [],
+        "nid": 0,
+        "correct": test
     });
 
     const isWordValid = (word) => {
-        return true;
+        return words.has(word.toLowerCase());
+    }
+
+    const updateStats = (result, tries) => {
+        // TODO!
     }
 
     const addPressedKey = (key) => {
@@ -52,7 +66,10 @@ function App() {
 
             let newCurrent = [...prev["current"]];
             let newPrevious = [...prev["previous"]];
+            let notification = [...prev["notifications"]];
             let end = false;
+            let nid = prev["nid"];
+            const correctWord = prev["correct"];
 
             switch (key) {
                 case "BACKSPACE":
@@ -64,10 +81,23 @@ function App() {
                     if (newCurrent.length === 5) {
                         const word = newCurrent.join("");
                         if (isWordValid(word)) {
-                            const wordResult = getCellResults(test, word);
+                            const wordResult = getCellResults(correctWord, word);
                             newPrevious.push(newCurrent.map((x, index) => [x, wordResult[index]]));
                             newCurrent = [];
-                            if (newPrevious.length === 6 || test === word) end = true;
+                            if (newPrevious.length === 6 || correctWord === word) {
+                                end = true;
+                                nid++;
+                                if (correctWord === word) {
+                                    notification.unshift(["Correcto!", nid]);
+                                } else {
+                                    notification.unshift([`Respuesta: ${correctWord}`, nid]);
+                                }
+                            }
+                        } else {
+                            const error = `word ${word} is not valid`;
+                            if (notification.length > 8) notification.pop();
+                            nid++;
+                            notification.unshift([error, nid]);
                         }
                     }
                     break;
@@ -76,7 +106,16 @@ function App() {
                     break;
             }
     
-            return {...prev, "previous": newPrevious, "current": newCurrent, "end": end};
+            const result = {
+                ...prev,
+                "previous": newPrevious,
+                "current": newCurrent,
+                "end": end,
+                "notifications": notification,
+                "nid": nid
+            };
+            localStorage.setItem("boardState", JSON.stringify({...result, "notifications": []}));
+            return result;
         });
     };
 
@@ -91,16 +130,18 @@ function App() {
 
     return (
         <div className="flex flex-col max-w-lg mx-auto h-screen text-black dark:text-gray-200">
-            <Navbar onButtonRulesClick={() => setTutorial(true)} />
+            <Navbar onButtonRulesClick={() => setTutorialDialog(true)} onButtonStatsClick={() => setStatsDialog(true)}/>
             <div className="flex-1 flex flex-col justify-between overflow-clip">
                 <div className="flex-1 flex flex-col justify-center">
                     <Board current={game["current"]} previous={game["previous"]} />
                 </div>
                 <div>
-                    <Keyboard onKeyPressed={key => addPressedKey(key)} />
+                    <Keyboard onKeyPressed={addPressedKey} />
                 </div>
             </div>
-            <TutorialDialog hidden={!tutorial} onClose={() => setTutorial(false)} />
+            <TutorialDialog hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
+            <StatsDialog hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
+            <Notification list={game["notifications"]}/>
         </div>
     );
 }
