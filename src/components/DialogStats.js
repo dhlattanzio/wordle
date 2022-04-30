@@ -60,8 +60,8 @@ export default function DialogStats(props) {
 
                     return (
                         <div key={index} className="flex mb-2">
-                            <span className="pr-2">{index + 1}</span>
-                            <span style={styles} className={`text-right px-2 ${x === 0 ? "bg-gray-700" : "bg-green-700"} text-white`}>{x}</span>
+                            <span className="w-5 mr-2">{index + 1}</span>
+                            <span style={styles} className={`min-w-[1.6rem] text-right px-2 ${x === 0 ? "bg-gray-700" : "bg-green-700"} text-white`}>{x}</span>
                         </div>
                     )
                 })}

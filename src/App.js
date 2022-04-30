@@ -176,7 +176,7 @@ function App() {
     }, []);
 
     return (
-        <div className="flex flex-col max-w-lg h-screen mx-auto text-zinc-800 dark:text-gray-200">
+        <div className="flex flex-col max-w-lg h-full mx-auto text-zinc-800 dark:text-gray-200">
             <Navbar
                 darkMode={darkMode}
                 onButtonThemeClick={() => toggleTheme()}

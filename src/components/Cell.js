@@ -2,8 +2,8 @@ import { useState } from "react";
 
 const getColor = {
     "-1": "bg-zinc-400 dark:bg-zinc-700 border-zinc-800 dark:border-zinc-500",
-    "0": "bg-yellow-500 dark:bg-yellow-700 border-yellow-800 dark:border-yellow-600",
-    "1": "bg-green-500 dark:bg-green-700 border-green-800 dark:border-green-500",
+    "0": "bg-yellow-500 dark:bg-yellow-700 border-yellow-800 dark:border-yellow-600 ",
+    "1": "bg-green-500 dark:bg-green-700 border-green-800 dark:border-green-500 ",
     "-2": ""
 }
 
@@ -37,7 +37,7 @@ export default function Cell(props) {
     const classes = `
     flex h-full justify-center items-center 
     ${cellSize} mx-0.5 
-    border-2 border-zinc-400 dark:border-zinc-600 
+    border ${!showResult ? "border-zinc-400 dark:border-zinc-600" : ""} 
     hover:border-gray-800 dark:hover:border-gray-400 rounded 
     ${showResult ? currentColor : ""} 
     ${(hasLetter && !hasResult && props.active) ? "border-black dark:border-zinc-400 animate-pulse " : ""} 
