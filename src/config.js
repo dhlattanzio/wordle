@@ -7,5 +7,5 @@ export const Config = {
             ['ENVIAR', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'DEL']
         ]
     },
-    flipDelay: 100
+    flipDelay: 150
 }

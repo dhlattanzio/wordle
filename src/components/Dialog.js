@@ -2,7 +2,7 @@ import { XIcon } from "@heroicons/react/solid"
 
 export default function Dialog(props) {
     return (
-        <div className={`${props.hidden ? "invisible opacity-0" : "opacity-100"}
+        <div onTransitionEnd={props.onTransitionEnd} className={`${props.hidden ? "invisible opacity-0" : "opacity-100"}
         absolute left-0 top-0 w-full h-full 
         bg-white dark:bg-zinc-900 
         overflow-hidden transition-all duration-300`}>

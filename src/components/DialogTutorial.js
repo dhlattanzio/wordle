@@ -1,8 +1,11 @@
 import Dialog from "./Dialog";
 import Cell from "./Cell";
 import { lang } from "../data/strings";
+import { useState } from "react";
 
 export default function DialogTutorial(props) {
+    const [resetCells, setResetCells] = useState(true);
+
     const wordCorrect = lang.dialog.tutorial.words.correct;
     const wordBadSpot = lang.dialog.tutorial.words.badSpot;
     const wordNotInWord = lang.dialog.tutorial.words.notInWord;
@@ -12,7 +15,7 @@ export default function DialogTutorial(props) {
     const tutorialWord3 = wordNotInWord[0].split("").map(x => x === wordNotInWord[2] ? -1 : -2);
 
     return (
-        <Dialog onClose={props.onClose} hidden={props.hidden} title={lang.dialog.tutorial.title}>
+        <Dialog onTransitionEnd={() => setResetCells(props.hidden)} onClose={props.onClose} hidden={props.hidden} title={lang.dialog.tutorial.title}>
             {lang.dialog.tutorial.details.map((x, index) => <p key={index} className="my-3">{x}</p>)}
 
             <hr className="my-4 mt-8 border-zinc-300 dark:border-zinc-700" />
@@ -20,7 +23,7 @@ export default function DialogTutorial(props) {
             <h3 className="mb-4 font-semibold">{lang.dialog.tutorial.examples}</h3>
 
             <div className="flex h-12 mt-8">
-                {wordCorrect[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord1[index]} value={x} />)}
+                {wordCorrect[0].split("").map((x, index) => <Cell delay={100} hidden={resetCells} size="small" key={index} result={tutorialWord1[index]} value={x} />)}
             </div>
 
             <p className="my-3">
@@ -28,7 +31,7 @@ export default function DialogTutorial(props) {
             </p>
 
             <div className="flex h-12 mt-8">
-                {wordBadSpot[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord2[index]} value={x} />)}
+                {wordBadSpot[0].split("").map((x, index) => <Cell delay={300} hidden={resetCells} size="small" key={index} result={tutorialWord2[index]} value={x} />)}
             </div>
 
             <p className="my-3">
@@ -36,7 +39,14 @@ export default function DialogTutorial(props) {
             </p>
 
             <div className="flex h-12 mt-8">
-                {wordNotInWord[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord3[index]} value={x} />)}
+                {wordNotInWord[0].split("").map((x, index) => (
+                    <Cell size="small"
+                        delay={500}
+                        hidden={resetCells}
+                        key={index}
+                        result={tutorialWord3[index]}
+                        value={x} />
+                ))}
             </div>
 
             <p className="my-3">

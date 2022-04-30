@@ -37,6 +37,7 @@ function App() {
     const [tutorialDialog, setTutorialDialog] = useState(false);
     const [statsDialog, setStatsDialog] = useState(false);
     const [openDialogAtEnd, setOpenDialogAtEnd] = useState(true);
+    const [invalidWord, setInvalidWord] = useState(false);
 
     const [game, setGame] = useState(startState && startState["seed"] === seed ? startState : {
         "previous": [],
@@ -146,6 +147,7 @@ function App() {
                         } else {
                             nid++;
                             notification.unshift([lang.notifications.invalidWord, nid]);
+                            setInvalidWord(true);
                         }
                     }
                     break;
@@ -186,6 +188,8 @@ function App() {
             <div className="flex flex-col flex-1 justify-between overflow-clip">
                 <div className="flex flex-col flex-1 justify-center">
                     <Board
+                        onAnimationEnd={() => setInvalidWord(false)}
+                        invalidWord={invalidWord}
                         current={game["current"]}
                         previous={game["previous"]} />
                 </div>

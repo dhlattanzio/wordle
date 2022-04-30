@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { act } from "react-dom/test-utils";
 
 const getColor = {
     "-1": "bg-zinc-400 dark:bg-zinc-700 border-zinc-800 dark:border-zinc-500",
@@ -16,7 +17,13 @@ const cellSizes = {
 export default function Cell(props) {
     const [active, setActive] = useState(true);
     const [flipping, setFlipping] = useState(false);
-    const [animNumber, setAnimNumer] = useState(1);
+    const [animNumber, setAnimNumber] = useState(1);
+
+    if (props.hidden) {
+        if (!active) setActive(true);
+        if (flipping) setFlipping(false);
+        if (animNumber !== 1) setAnimNumber(1);
+    }
 
     const hasResult = (props.result ?? -2) !== -2;
     const hasLetter = props.value && props.value !== "";
@@ -26,7 +33,7 @@ export default function Cell(props) {
     const cellSize = cellSizes[props.size ?? "big"];
     const delay = props.delay ?? 0;
 
-    if (hasResult && active) {
+    if (hasResult && active && !props.hidden) {
         setActive(false);
         const timeout = setTimeout(() => {
             setFlipping(true);
@@ -42,7 +49,7 @@ export default function Cell(props) {
     ${showResult ? currentColor : ""} 
     ${(hasLetter && !hasResult && props.active) ? "border-black dark:border-zinc-400 animate-pulse " : ""} 
     ${(hasResult && !active) ? (flipping ? (animNumber === 1 ? "scale-y-0 animate-flipStart " : "animate-flipEnd ") : "") : ""}
-    select-none 
+    select-none ${props.hidden ? "animate-none" : ""}
     `;
 
     const onAnimationEnd = () => {
@@ -50,7 +57,7 @@ export default function Cell(props) {
             if (animNumber === 2) {
                 setFlipping(false);
             } else {
-                setAnimNumer(n => n + 1);
+                setAnimNumber(n => n + 1);
             }
         }
     }

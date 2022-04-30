@@ -12,9 +12,9 @@ const strings = {
                 newWordleEveryDay: "¡Un nuevo WORDLE estará disponible cada día!",
                 examples: "Ejemplos",
                 words: {
-                    correct: ["WEARY", "La letra ", "W", " está en la palabra y en la posición correcta."],
-                    badSpot: ["PILLS", "La letra ", "I", " está en la palabra pero en no la posición incorrecta."],
-                    notInWord: ["VAGUE", "La letra ", "U", " no está en la palabra."]
+                    correct: ["DIANA", "La letra ", "D", " está en la palabra y en la posición correcta."],
+                    badSpot: ["TORTA", "La letra ", "R", " está en la palabra pero en no la posición incorrecta."],
+                    notInWord: ["BRAZO", "La letra ", "Z", " no está en la palabra."]
                 }
             },
             statistics: {
