@@ -152,7 +152,7 @@ function App() {
                 </div>
             </div>
             <DialogTutorial hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
-            <DialogStats stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
+            <DialogStats showTimer={game["end"]} stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
             <Notification list={game["notifications"]}/>
         </div>
     );
