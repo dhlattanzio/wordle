@@ -10,8 +10,11 @@ const Item = (props) => {
         return () => clearTimeout(timer);
     }, []);
 
-    const classes = `transition-opacity duration-500 mt-5 px-10 py-4 rounded bg-zinc-100 text-center 
-    shadow border border-zinc-400 ${finish ? "opacity-0 scale-50 animate-notificationOut" : "animate-notificationIn"}`;
+    const classes = `transition-opacity duration-500 mt-5 px-10 py-4 
+    bg-zinc-100 shadow 
+    border border-zinc-400 rounded 
+    text-center 
+    ${finish ? "opacity-0 scale-50 animate-notificationOut" : "animate-notificationIn"}`;
 
     return (
         <div className={classes}>
@@ -22,9 +25,10 @@ const Item = (props) => {
 
 export default function Notification(props) {
     return (
-        <div className="flex flex-col items-center text-zinc-700 w-full top-0 absolute mt-14 left-0 h-5/6 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 flex flex-col items-center w-full h-5/6 mt-14 
+         text-zinc-700 overflow-hidden pointer-events-none">
             {props.list.reverse().map(elem => (
-                <Item key={elem[1]} value={elem[0]}/>
+                <Item key={elem[1]} value={elem[0]} />
             ))}
         </div>
     );

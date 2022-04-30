@@ -8,6 +8,10 @@ export const getDayOfYear = () => {
     return Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
 }
 
+export const getYear = () => {
+    return (new Date()).getFullYear();
+}
+
 export const calculateTimeLeftNewWord = () => {
     const today = new Date();
     const tomorrow = new Date(today);

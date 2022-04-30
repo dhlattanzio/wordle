@@ -1,43 +1,50 @@
 import Dialog from "./Dialog";
 import Cell from "./Cell";
-
-import { getCellResults } from "../utils/utils";
+import { lang } from "../data/strings";
 
 export default function DialogTutorial(props) {
-    const tutorialWord1 = getCellResults("W____", "WEARY").map(x => x === 1 ? x : -2);
-    const tutorialWord2 = getCellResults("____I", "PILLS").map(x => x === 0 ? x : -2);
-    const tutorialWord3 = getCellResults("_____", "VAGUE").map((x, index) => index === 3 ? x : -2);
+    const wordCorrect = lang.dialog.tutorial.words.correct;
+    const wordBadSpot = lang.dialog.tutorial.words.badSpot;
+    const wordNotInWord = lang.dialog.tutorial.words.notInWord;
+
+    const tutorialWord1 = wordCorrect[0].split("").map(x => x === wordCorrect[2] ? 1 : -2);
+    const tutorialWord2 = wordBadSpot[0].split("").map(x => x === wordBadSpot[2] ? 0 : -2);
+    const tutorialWord3 = wordNotInWord[0].split("").map(x => x === wordNotInWord[2] ? -1 : -2);
 
     return (
-        <Dialog onClose={props.onClose} hidden={props.hidden} title="HOW TO PLAY">
-            <p>Guess the WORDLE in six tries.</p>
-            <p className="my-3">Each guess must be a valid five-letter word. Hit the enter button to submit.</p>
-            <p>After each guess, the color of the tiles will change to show how close your guess was to the word.</p>
+        <Dialog onClose={props.onClose} hidden={props.hidden} title={lang.dialog.tutorial.title}>
+            {lang.dialog.tutorial.details.map((x, index) => <p key={index} className="my-3">{x}</p>)}
 
-            <hr className="my-4 border-zinc-500" />
+            <hr className="my-4 mt-8 border-zinc-300 dark:border-zinc-700" />
 
-            <h3 className="font-semibold mb-4">Examples</h3>
+            <h3 className="mb-4 font-semibold">{lang.dialog.tutorial.examples}</h3>
 
-            <div className="flex mt-8 h-12">
-                {"WEARY".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord1[index]} value={x} />)}
+            <div className="flex h-12 mt-8">
+                {wordCorrect[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord1[index]} value={x} />)}
             </div>
 
-            <p className="my-3">The letter <span className="font-bold">W</span> is in the word and in the correct spot.</p>
+            <p className="my-3">
+                {wordCorrect[1]} <span className="font-bold">{wordCorrect[2]}</span> {wordCorrect[3]}
+            </p>
 
-            <div className="flex mt-8 h-12">
-                {"PILLS".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord2[index]} value={x} />)}
+            <div className="flex h-12 mt-8">
+                {wordBadSpot[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord2[index]} value={x} />)}
             </div>
 
-            <p className="my-3">The letter <span className="font-bold">I</span> is in the word but in the wrong spot.</p>
+            <p className="my-3">
+                {wordBadSpot[1]} <span className="font-bold">{wordBadSpot[2]}</span> {wordBadSpot[3]}
+            </p>
 
-            <div className="flex mt-8 h-12">
-                {"VAGUE".split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord3[index]} value={x} />)}
+            <div className="flex h-12 mt-8">
+                {wordNotInWord[0].split("").map((x, index) => <Cell size="small" key={index} result={tutorialWord3[index]} value={x} />)}
             </div>
 
-            <p className="my-3">The letter <span className="font-bold">U</span> is not in the word in any spot.</p>
+            <p className="my-3">
+                {wordNotInWord[1]} <span className="font-bold">{wordNotInWord[2]}</span> {wordNotInWord[3]}
+            </p>
 
-            <hr className="my-4 border-zinc-500" />
-            <p className="my-3 font-semibold">A new WORDLE will be available each day!</p>
+            <hr className="my-4 border-zinc-300 dark:border-zinc-700" />
+            <p className="my-3 font-semibold">{lang.dialog.tutorial.newWordleEveryDay}</p>
         </Dialog>
     );
 }

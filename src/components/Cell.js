@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 const getColor = {
-    "-1": "bg-zinc-700",
-    "0": "bg-yellow-700",
-    "1": "bg-green-700",
+    "-1": "bg-zinc-400 dark:bg-zinc-700 border-zinc-800 dark:border-zinc-500",
+    "0": "bg-yellow-500 dark:bg-yellow-700 border-yellow-800 dark:border-yellow-600",
+    "1": "bg-green-500 dark:bg-green-700 border-green-800 dark:border-green-500",
     "-2": ""
 }
 
@@ -25,7 +25,7 @@ export default function Cell(props) {
 
     const cellSize = cellSizes[props.size ?? "big"];
     const delay = props.delay ?? 0;
-    
+
     if (hasResult && active) {
         setActive(false);
         const timeout = setTimeout(() => {
@@ -35,11 +35,14 @@ export default function Cell(props) {
     }
 
     const classes = `
-    flex h-full ${cellSize} ${!showResult ? "border-2" : ""} mx-0.5 border-zinc-400 dark:border-zinc-600 
-    justify-center items-center hover:border-gray-800 dark:hover:border-gray-400 select-none 
+    flex h-full justify-center items-center 
+    ${cellSize} mx-0.5 
+    border-2 border-zinc-400 dark:border-zinc-600 
+    hover:border-gray-800 dark:hover:border-gray-400 rounded 
     ${showResult ? currentColor : ""} 
-    ${(hasLetter && !hasResult) ? " animate-pulse border-black dark:border-zinc-400" : ""} 
-    ${(hasResult && !active) ? (flipping ? (animNumber === 1 ? "scale-y-0 animate-flipStart " : "animate-flipEnd") : "") : ""}
+    ${(hasLetter && !hasResult && props.active) ? "border-black dark:border-zinc-400 animate-pulse " : ""} 
+    ${(hasResult && !active) ? (flipping ? (animNumber === 1 ? "scale-y-0 animate-flipStart " : "animate-flipEnd ") : "") : ""}
+    select-none 
     `;
 
     const onAnimationEnd = () => {

@@ -8,11 +8,12 @@ import DialogStats from "./components/DialogStats";
 import Notification from "./components/Notification";
 
 import { words } from './data/words'
-import { random, getDayOfYear, getCellResults, getShareString } from "./utils/utils";
+import { random, getDayOfYear, getYear, getCellResults } from "./utils/utils";
 import { Config } from "./config";
 
+const seed = getYear() * 1000 + getDayOfYear();
 const allWords = [...words];
-const todayWordIndex = random(getDayOfYear() + 1, 0, allWords.length);
+const todayWordIndex = random(seed, 0, allWords.length);
 const todayWord = allWords[todayWordIndex].toUpperCase();
 console.log("Respuesta: ", todayWord)
 
@@ -26,17 +27,29 @@ const startStatistics = (localStorage.getItem("stats") ? JSON.parse(localStorage
 });
 
 function App() {
+    const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
     const [tutorialDialog, setTutorialDialog] = useState(false);
     const [statsDialog, setStatsDialog] = useState(false);
     const [openDialogAtEnd, setOpenDialogAtEnd] = useState(true);
 
-    const [game, setGame] = useState(startState || {
+    const toggleTheme = () => {
+        localStorage.setItem("darkMode", !darkMode);
+        setDarkMode(!darkMode);
+        document.querySelector("html").classList.toggle("dark");
+    }
+
+    useEffect(() => {
+        if (localStorage.getItem("darkMode") === "true") document.querySelector("html").classList.add("dark");
+    }, []);
+
+    const [game, setGame] = useState(startState && startState["seed"] === seed ? startState : {
         "previous": [],
         "current": [],
         "end": false,
         "notifications": [],
         "nid": 0,
-        "correct": todayWord
+        "correct": todayWord,
+        "seed": seed
     });
 
     const [stats, setStats] = useState(startStatistics);
@@ -163,8 +176,10 @@ function App() {
     }, []);
 
     return (
-        <div className="flex flex-col max-w-lg mx-auto h-screen text-black dark:text-gray-200">
+        <div className="flex flex-col max-w-lg mx-auto h-screen text-zinc-800 dark:text-gray-200">
             <Navbar
+                darkMode={darkMode}
+                onButtonThemeClick={() => toggleTheme()}
                 onButtonRulesClick={() => setTutorialDialog(true)}
                 onButtonStatsClick={() => setStatsDialog(true)} />
 
