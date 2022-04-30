@@ -10,13 +10,19 @@ import Notification from "./components/Notification";
 import { words } from './data/words'
 import { random, getDayOfYear, getYear, getCellResults } from "./utils/utils";
 import { Config } from "./config";
+import { lang } from "./data/strings";
 
+// Start Theme
+if (localStorage.getItem("darkMode") === "true") document.querySelector("html").classList.add("dark");
+
+// Today Word
 const seed = getYear() * 1000 + getDayOfYear();
 const allWords = [...words];
 const todayWordIndex = random(seed, 0, allWords.length);
 const todayWord = allWords[todayWordIndex].toUpperCase();
 console.log("Respuesta: ", todayWord)
 
+// Current State & Statistics
 const startState = (localStorage.getItem("boardState") && JSON.parse(localStorage.getItem("boardState")));
 const startStatistics = (localStorage.getItem("stats") ? JSON.parse(localStorage.getItem("stats")) : {
     played: 0,
@@ -32,16 +38,6 @@ function App() {
     const [statsDialog, setStatsDialog] = useState(false);
     const [openDialogAtEnd, setOpenDialogAtEnd] = useState(true);
 
-    const toggleTheme = () => {
-        localStorage.setItem("darkMode", !darkMode);
-        setDarkMode(!darkMode);
-        document.querySelector("html").classList.toggle("dark");
-    }
-
-    useEffect(() => {
-        if (localStorage.getItem("darkMode") === "true") document.querySelector("html").classList.add("dark");
-    }, []);
-
     const [game, setGame] = useState(startState && startState["seed"] === seed ? startState : {
         "previous": [],
         "current": [],
@@ -54,6 +50,7 @@ function App() {
 
     const [stats, setStats] = useState(startStatistics);
 
+    // Open statistics dialog if board is completed
     if (game["end"] && openDialogAtEnd) {
         setOpenDialogAtEnd(false);
         setTimeout(() => {
@@ -61,8 +58,34 @@ function App() {
         }, 1500);
     }
 
+    const toggleTheme = () => {
+        localStorage.setItem("darkMode", !darkMode);
+        setDarkMode(!darkMode);
+        document.querySelector("html").classList.toggle("dark");
+    }
+
     const isWordValid = (word) => {
         return words.has(word.toLowerCase());
+    }
+
+    const copyShareInfoToClipboard = () => {
+        const win = stats["streak"] > 0;
+        const notifications = [...game["notifications"]];
+        const totalTries = game["previous"].length;
+        const nid = game["nid"];
+
+        const boardString = game["previous"].reduce((i, x) => {
+            const line = x.reduce((j, [letter, result]) => {
+                return j + (result === -1 ? "⬛" : (result === 0 ? "🟨" : "🟩"));
+            }, "");
+            return  i + (i !== "" ? "\n" : "") + line;
+        }, "");
+
+        navigator.clipboard.writeText(`${lang.title}  ${win ? totalTries : "X"}/6\n\n${boardString}`);
+
+        if (notifications.length > 8) notifications.pop();
+        notifications.unshift([lang.notifications.copyToClipboard, nid + 1]);
+        setGame(prev => ({...prev, "nid": nid + 1, "notifications": notifications}));
     }
 
     const updateStats = (win, tries) => {
@@ -81,28 +104,7 @@ function App() {
         setStats(newStats);
     }
 
-    const copyShareInfoToClipboard = () => {
-        const win = stats["streak"] > 0;
-        const notifications = [...game["notifications"]];
-        let nid = game["nid"];
-        const totalTries = game["previous"].length;
-
-        const boardString = game["previous"].reduce((i, x) => {
-            const line = x.reduce((j, [letter, result]) => {
-                return j + (result === -1 ? "⬛" : (result === 0 ? "🟨" : "🟩"));
-            }, "");
-            return  i + (i !== "" ? "\n" : "") + line;
-        }, "");
-
-        navigator.clipboard.writeText(`Wordle(es)  ${win ? totalTries : "X"}/6\n\n${boardString}`);
-        
-        nid++;
-        if (notifications.length > 8) notifications.pop();
-        notifications.unshift(["copied to clipboard", nid]);
-        setGame(prev => ({...prev, "nid": nid, "notifications": notifications}));
-    }
-
-    const addPressedKey = (key) => {
+    const processPressedKey = (key) => {
         key = key.toUpperCase();
 
         setGame(prev => {
@@ -134,17 +136,16 @@ function App() {
                                 end = true;
                                 nid++;
                                 if (correctWord === word) {
-                                    notification.unshift(["Correcto!", nid]);
+                                    notification.unshift([lang.notifications.correct, nid]);
                                     updateStats(true, newPrevious.length);
                                 } else {
-                                    notification.unshift([`Respuesta: ${correctWord}`, nid]);
+                                    notification.unshift([`${correctWord}`, nid]);
                                     updateStats(false, newPrevious.length);
                                 }
                             }
                         } else {
-                            const error = `word ${word} is not valid`;
                             nid++;
-                            notification.unshift([error, nid]);
+                            notification.unshift([lang.notifications.invalidWord, nid]);
                         }
                     }
                     break;
@@ -166,31 +167,30 @@ function App() {
         });
     };
 
-    const temp = (key) => addPressedKey(key.key);
     useEffect(() => {
-        document.addEventListener("keydown", temp, false);
+        const keyDownListener = (key) => processPressedKey(key.key);
+        document.addEventListener("keydown", keyDownListener, false);
 
-        return () => {
-            document.removeEventListener("keydown", temp, false);
-        };
+        return () => document.removeEventListener("keydown", keyDownListener, false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <div className="flex flex-col max-w-lg mx-auto h-screen text-zinc-800 dark:text-gray-200">
+        <div className="flex flex-col max-w-lg h-screen mx-auto text-zinc-800 dark:text-gray-200">
             <Navbar
                 darkMode={darkMode}
                 onButtonThemeClick={() => toggleTheme()}
                 onButtonRulesClick={() => setTutorialDialog(true)}
                 onButtonStatsClick={() => setStatsDialog(true)} />
 
-            <div className="flex-1 flex flex-col justify-between overflow-clip">
-                <div className="flex-1 flex flex-col justify-center">
+            <div className="flex flex-col flex-1 justify-between overflow-clip">
+                <div className="flex flex-col flex-1 justify-center">
                     <Board
                         current={game["current"]}
                         previous={game["previous"]} />
                 </div>
                 <div>
-                    <Keyboard onKeyPressed={addPressedKey} />
+                    <Keyboard onKeyPressed={processPressedKey} />
                 </div>
             </div>
 

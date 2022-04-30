@@ -9,7 +9,7 @@ const strings = {
                     "Cada intento debe ser una palabra valida de cinco letras. Pulsa enter para intentar.",
                     "Después de cada palabra, el color de cada bloque cambiará dependiendo que tan cerca estuviste de la palabra correcta."
                 ],
-                newWordleEveryDay: "Un nuevo WORDLE estará disponible cada día!",
+                newWordleEveryDay: "¡Un nuevo WORDLE estará disponible cada día!",
                 examples: "Ejemplos",
                 words: {
                     correct: ["WEARY", "La letra ", "W", " está en la palabra y en la posición correcta."],
@@ -29,7 +29,9 @@ const strings = {
             }
         },
         notifications: {
-            
+            correct: "¡Correcto!",
+            invalidWord: "Palabra inválida",
+            copyToClipboard: "Copiado al portapapeles"
         }
     }
 }
