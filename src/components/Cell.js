@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { act } from "react-dom/test-utils";
 
 const getColor = {
     "-1": "bg-zinc-400 dark:bg-zinc-700 border-zinc-800 dark:border-zinc-500",

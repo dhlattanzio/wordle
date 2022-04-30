@@ -38,6 +38,7 @@ function App() {
     const [statsDialog, setStatsDialog] = useState(false);
     const [openDialogAtEnd, setOpenDialogAtEnd] = useState(true);
     const [invalidWord, setInvalidWord] = useState(false);
+    const [usedKeys, setUsedKeys] = useState({});
 
     const [game, setGame] = useState(startState && startState["seed"] === seed ? startState : {
         "previous": [],
@@ -50,6 +51,19 @@ function App() {
     });
 
     const [stats, setStats] = useState(startStatistics);
+
+    // Used keys
+    useEffect(() => {
+        const tmpMap = {};
+        game["previous"].map(x => {
+            x.map(y => {
+                tmpMap[y[0]] = Math.max(tmpMap[y[0]] ?? -2, y[1]);
+                return y;
+            });
+            return x;
+        });
+        setUsedKeys(tmpMap);
+    }, [game]);
 
     // Open statistics dialog if board is completed
     if (game["end"] && openDialogAtEnd) {
@@ -79,14 +93,14 @@ function App() {
             const line = x.reduce((j, [letter, result]) => {
                 return j + (result === -1 ? "⬛" : (result === 0 ? "🟨" : "🟩"));
             }, "");
-            return  i + (i !== "" ? "\n" : "") + line;
+            return i + (i !== "" ? "\n" : "") + line;
         }, "");
 
         navigator.clipboard.writeText(`${lang.title}  ${win ? totalTries : "X"}/6\n\n${boardString}`);
 
         if (notifications.length > 8) notifications.pop();
         notifications.unshift([lang.notifications.copyToClipboard, nid + 1]);
-        setGame(prev => ({...prev, "nid": nid + 1, "notifications": notifications}));
+        setGame(prev => ({ ...prev, "nid": nid + 1, "notifications": notifications }));
     }
 
     const updateStats = (win, tries) => {
@@ -132,6 +146,13 @@ function App() {
                         if (isWordValid(word)) {
                             const wordResult = getCellResults(correctWord, word);
                             newPrevious.push(newCurrent.map((x, index) => [x, wordResult[index]]));
+
+                            setUsedKeys(prev => {
+                                const result = { ...prev };
+                                newCurrent.map((x, index) => result[x] = Math.max(result[x] ?? -2, wordResult[index]))
+                                return result;
+                            });
+
                             newCurrent = [];
                             if (newPrevious.length === 6 || correctWord === word) {
                                 end = true;
@@ -194,7 +215,9 @@ function App() {
                         previous={game["previous"]} />
                 </div>
                 <div>
-                    <Keyboard onKeyPressed={processPressedKey} />
+                    <Keyboard
+                        usedKeys={usedKeys}
+                        onKeyPressed={processPressedKey} />
                 </div>
             </div>
 
