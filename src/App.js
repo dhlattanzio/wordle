@@ -8,7 +8,7 @@ import DialogStats from "./components/DialogStats";
 import Notification from "./components/Notification";
 
 import { words } from './data/words'
-import { random, getDayOfYear, getCellResults } from "./utils/utils";
+import { random, getDayOfYear, getCellResults, getShareString } from "./utils/utils";
 import { Config } from "./config";
 
 const allWords = [...words];
@@ -68,6 +68,27 @@ function App() {
         setStats(newStats);
     }
 
+    const copyShareInfoToClipboard = () => {
+        const win = stats["streak"] > 0;
+        const notifications = [...game["notifications"]];
+        let nid = game["nid"];
+        const totalTries = game["previous"].length;
+
+        const boardString = game["previous"].reduce((i, x) => {
+            const line = x.reduce((j, [letter, result]) => {
+                return j + (result === -1 ? "⬛" : (result === 0 ? "🟨" : "🟩"));
+            }, "");
+            return  i + (i !== "" ? "\n" : "") + line;
+        }, "");
+
+        navigator.clipboard.writeText(`Wordle(es)  ${win ? totalTries : "X"}/6\n\n${boardString}`);
+        
+        nid++;
+        if (notifications.length > 8) notifications.pop();
+        notifications.unshift(["copied to clipboard", nid]);
+        setGame(prev => ({...prev, "nid": nid, "notifications": notifications}));
+    }
+
     const addPressedKey = (key) => {
         key = key.toUpperCase();
 
@@ -80,6 +101,8 @@ function App() {
             let end = false;
             let nid = prev["nid"];
             const correctWord = prev["correct"];
+
+            if (notification.length > 8) notification.pop();
 
             switch (key) {
                 case "BACKSPACE":
@@ -107,7 +130,6 @@ function App() {
                             }
                         } else {
                             const error = `word ${word} is not valid`;
-                            if (notification.length > 8) notification.pop();
                             nid++;
                             notification.unshift([error, nid]);
                         }
@@ -117,7 +139,7 @@ function App() {
                     if (newCurrent.length < 5 && Config.validLetters.includes(key)) newCurrent.push(key);
                     break;
             }
-    
+
             const result = {
                 ...prev,
                 "previous": newPrevious,
@@ -126,7 +148,7 @@ function App() {
                 "notifications": notification,
                 "nid": nid
             };
-            localStorage.setItem("boardState", JSON.stringify({...result, "notifications": []}));
+            localStorage.setItem("boardState", JSON.stringify({ ...result, "notifications": [] }));
             return result;
         });
     };
@@ -142,18 +164,34 @@ function App() {
 
     return (
         <div className="flex flex-col max-w-lg mx-auto h-screen text-black dark:text-gray-200">
-            <Navbar onButtonRulesClick={() => setTutorialDialog(true)} onButtonStatsClick={() => setStatsDialog(true)}/>
+            <Navbar
+                onButtonRulesClick={() => setTutorialDialog(true)}
+                onButtonStatsClick={() => setStatsDialog(true)} />
+
             <div className="flex-1 flex flex-col justify-between overflow-clip">
                 <div className="flex-1 flex flex-col justify-center">
-                    <Board current={game["current"]} previous={game["previous"]} />
+                    <Board
+                        current={game["current"]}
+                        previous={game["previous"]} />
                 </div>
                 <div>
                     <Keyboard onKeyPressed={addPressedKey} />
                 </div>
             </div>
-            <DialogTutorial hidden={!tutorialDialog} onClose={() => setTutorialDialog(false)} />
-            <DialogStats showTimer={game["end"]} stats={stats} hidden={!statsDialog} onClose={() => setStatsDialog(false)} />
-            <Notification list={game["notifications"]}/>
+
+            <DialogTutorial
+                hidden={!tutorialDialog}
+                onClose={() => setTutorialDialog(false)} />
+
+            <DialogStats
+                onShareClick={copyShareInfoToClipboard}
+                showTimer={game["end"]}
+                stats={stats}
+                hidden={!statsDialog}
+                onClose={() => setStatsDialog(false)} />
+
+            <Notification
+                list={game["notifications"]} />
         </div>
     );
 }

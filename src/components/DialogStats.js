@@ -74,7 +74,7 @@ export default function DialogStats(props) {
                 </div>
                 <div className="self-stretch w-px bg-gray-500"></div>
                 <div className="flex-1 flex justify-center">
-                    <button onClick={() => (console.log("share"))} className="flex justify-center items-center text-white text-xl px-6 py-2 font-semibold rounded-md bg-green-700 hover:bg-green-800">
+                    <button onClick={props.onShareClick} className="flex justify-center items-center text-white text-xl px-6 py-2 font-semibold rounded-md bg-green-700 hover:bg-green-800">
                         <span>SHARE</span> <ShareIcon className="inline-block w-5 h-5 ml-2" />
                     </button>
                 </div>
