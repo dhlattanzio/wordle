@@ -1,4 +1,5 @@
 export const Config = {
+    seed: 4718362,
     validLetters: "QWERTYUIOPASDFGHJKLÑZXCVBNM".split(""),
     keyboard: {
         keys: [

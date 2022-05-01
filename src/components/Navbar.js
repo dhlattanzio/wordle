@@ -7,7 +7,7 @@ export default function Navbar(props) {
             <button onClick={props.onButtonRulesClick}><BookOpenIcon className='h-7 w-7 ml-4 hover:text-zinc-400' /></button>
             <div className='flex-1'></div>
             <div className='absolute top-2 text-center'>
-                <a onClick={() => localStorage.setItem("boardState", null)} href='/' className="text-3xl font-bold hover:text-zinc-400">{lang.title}</a>
+                <span className="text-3xl font-bold hover:text-zinc-400 cursor-pointer select-none">{lang.title}</span>
             </div>
             <button onClick={props.onButtonThemeClick}>
                 {props.darkMode

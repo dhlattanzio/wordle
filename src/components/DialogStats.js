@@ -1,13 +1,19 @@
 import Dialog from "./Dialog";
-import { ShareIcon } from "@heroicons/react/solid";
-import { addZeroIfLower10, calculateTimeLeftNewWord } from "../utils/utils";
+import { ShareIcon, PlayIcon } from "@heroicons/react/solid";
+import { addZeroIfLower10, calculateTimeLeftNewWord, getDayOfYear } from "../utils/utils";
 import { useState, useEffect } from "react";
 import { lang } from "../data/strings";
 
 export default function DialogStats(props) {
     const [timeForNextWord, setTimeForNextWord] = useState({});
+    const [nextWordAvailable, setNextWordAvailable] = useState(false);
+
+    const goToNextDayWordle = () => {
+        window.location.reload();
+    }
 
     useEffect(() => {
+        const todayNumber = getDayOfYear();
         const calculate = () => {
             const timeLeft = calculateTimeLeftNewWord();
             setTimeForNextWord({
@@ -17,12 +23,15 @@ export default function DialogStats(props) {
             })
         }
 
-        calculate();
-        const interval = setInterval(() => {
+        if (!nextWordAvailable) {
             calculate();
-        }, 1000);
-        return () => interval;
-    }, []);
+            const interval = setInterval(() => {
+                calculate();
+                if (getDayOfYear() !== todayNumber) setNextWordAvailable(true);
+            }, 1000);
+            return () => interval;
+        }
+    }, [nextWordAvailable]);
 
     const stats = props.stats;
     const wins = stats["wins"];
@@ -70,15 +79,32 @@ export default function DialogStats(props) {
             <hr className={`${props.showTimer ? "" : "hidden"} my-4 border-zinc-300 dark:border-zinc-700`} />
             <div className={`${props.showTimer ? "" : "hidden"} flex items-center mb-4`}>
                 <div className="flex-1 text-center font-semibold">
-                    <p className="">{lang.dialog.statistics.nextWordle}</p>
-                    <p className="text-3xl">
-                        {`${timeForNextWord.hours ?? "00"}:${timeForNextWord.minutes ?? "00"}:${timeForNextWord.seconds ?? "00"}`}
-                    </p>
+                    {(() => {
+                        if (nextWordAvailable) {
+                            return <div className="inline-block">
+                                <button onClick={goToNextDayWordle}
+                                    className="flex justify-center items-center px-6 py-3 min-h-[4rem] 
+                                             bg-green-700 hover:bg-green-800 
+                                               rounded-md text-white text-base font-semibold">
+                                    <span>{lang.dialog.statistics.nextWordle}</span> <PlayIcon className="inline-block w-6 h-6 ml-2" />
+                                </button>
+                            </div>
+                        } else {
+                            return (
+                                <div>
+                                    <p className="">{lang.dialog.statistics.nextWordle}</p>
+                                    <p className="text-3xl">
+                                        {`${timeForNextWord.hours ?? "00"}:${timeForNextWord.minutes ?? "00"}:${timeForNextWord.seconds ?? "00"}`}
+                                    </p>
+                                </div>
+                            );
+                        }
+                    })()}
                 </div>
-                <div className="self-stretch w-px bg-zinc-300 dark:bg-zinc-700"></div>
+                <div className="self-stretch w-px bg-zinc-300 dark:bg-zinc-700 mx-5"></div>
                 <div className="flex flex-1 justify-center">
                     <button onClick={props.onShareClick}
-                        className="flex justify-center items-center px-6 py-3
+                        className="flex justify-center items-center px-6 py-3 min-h-[4rem]
                         bg-green-700 hover:bg-green-800 
                         rounded-md text-white text-xl font-semibold">
                         <span>{lang.dialog.statistics.share}</span> <ShareIcon className="inline-block w-5 h-5 ml-2" />

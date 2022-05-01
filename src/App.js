@@ -16,11 +16,10 @@ import { lang } from "./data/strings";
 if (localStorage.getItem("darkMode") === "true") document.querySelector("html").classList.add("dark");
 
 // Today Word
-const seed = getYear() * 1000 + getDayOfYear();
+const seed = Config.seed + (getYear() * 1000 + getDayOfYear());
 const allWords = [...words];
 const todayWordIndex = random(seed, 0, allWords.length);
 const todayWord = allWords[todayWordIndex].toUpperCase();
-console.log("Respuesta: ", todayWord)
 
 // Current State & Statistics
 const startState = (localStorage.getItem("boardState") && JSON.parse(localStorage.getItem("boardState")));

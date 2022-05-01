@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  wordle_es:
+    container_name: wordle_es
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    environment:
+      - CHOKIDAR_USEPOLLING=true

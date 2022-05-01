@@ -12,8 +12,7 @@ export const getYear = () => {
     return (new Date()).getFullYear();
 }
 
-export const calculateTimeLeftNewWord = () => {
-    const today = new Date();
+export const calculateTimeLeftNewWord = (today = new Date()) => {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1)
     tomorrow.setHours(0);

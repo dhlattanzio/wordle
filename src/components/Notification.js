@@ -27,7 +27,7 @@ export default function Notification(props) {
     return (
         <div className="absolute top-0 left-0 flex flex-col items-center w-full h-5/6 mt-14 
          text-zinc-700 overflow-hidden pointer-events-none">
-            {props.list.reverse().map(elem => (
+            {props.list.map(elem => (
                 <Item key={elem[1]} value={elem[0]} />
             ))}
         </div>
