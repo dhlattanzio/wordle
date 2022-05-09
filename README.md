@@ -9,7 +9,7 @@ The app is responsive (suitable for phone, tablet, etc).
 
 ## Preview
 
-[Online demo](https://sa.dhlattanzio.com)
+[Online demo](https://dhlattanzio.com/app/wordle/)
 
 ## How to run
 
