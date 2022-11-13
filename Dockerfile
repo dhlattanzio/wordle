@@ -14,3 +14,4 @@ FROM nginx:1.22-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=build /app/build .
+CMD ["nginx", "-g", "daemon off;"]
